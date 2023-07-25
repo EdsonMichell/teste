@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arraste o Quadrado</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #quadrado {
+      width: 100px;
+      height: 100px;
+      background-color: blue;
+      position: absolute;
+      cursor: grab;
+    }
+    #mensagem {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="quadrado"></div>
+  <div id="mensagem">Te Amo Amor</div>
+  <script>
+    const quadrado = document.getElementById('quadrado');
+    const mensagem = document.getElementById('mensagem');
+
+    let offsetX, offsetY, isDragging = false;
+
+    quadrado.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      offsetX = e.clientX - quadrado.getBoundingClientRect().left;
+      offsetY = e.clientY - quadrado.getBoundingClientRect().top;
+      quadrado.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const x = e.clientX - offsetX;
+      const y = e.clientY - offsetY;
+      quadrado.style.left = `${x}px`;
+      quadrado.style.top = `${y}px`;
+
+      // Verificar se o quadrado passa por cima da mensagem
+      const quadradoRect = quadrado.getBoundingClientRect();
+      const mensagemRect = mensagem.getBoundingClientRect();
+
+      if (
+        quadradoRect.left < mensagemRect.right &&
+        quadradoRect.right > mensagemRect.left &&
+        quadradoRect.top < mensagemRect.bottom &&
+        quadradoRect.bottom > mensagemRect.top
+      ) {
+        mensagem.style.display = 'block';
+      } else {
+        mensagem.style.display = 'none';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      quadrado.style.cursor = 'grab';
+    });
+  </script>
+</body>
+</html>
